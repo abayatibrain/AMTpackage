@@ -6,7 +6,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="AutoMorphoTrack",
-    version="1.0.0",
+    version="1.0.5",
     author="Armin Bayati",
     author_email="a.bayati.brain@gmail.com",
     description=(
