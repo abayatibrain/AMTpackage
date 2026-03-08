@@ -1,5 +1,5 @@
 # ============================================================
-# AutoMorphoTrack – Organelle Detection
+# AutoMorphoTrack â Organelle Detection
 # ============================================================
 
 import tifffile, numpy as np, cv2
@@ -41,7 +41,7 @@ def detect_organelles(
         mito_gray = (mito_img * 255).astype(np.uint8)
         mito_rgb = cv2.cvtColor(mito_gray, cv2.COLOR_GRAY2RGB)
         cnts, _ = cv2.findContours(mito_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        cv2.drawContours(mito_rgb, cnts, -1, (255, 0, 0), 1, cv2.LINE_AA)
+        cv2.drawContours(mito_rgb, cnts, -1, (1, 115, 178), 1, cv2.LINE_AA)  # CB blue
         mito_frames.append(upscale_frame(mito_rgb, upscale_factor))
 
         # ----- Lysosomes (standard detection) -----
@@ -49,7 +49,7 @@ def detect_organelles(
         lyso_gray = (lyso_img * 255).astype(np.uint8)
         lyso_rgb = cv2.cvtColor(lyso_gray, cv2.COLOR_GRAY2RGB)
         cnts, _ = cv2.findContours(lyso_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        cv2.drawContours(lyso_rgb, cnts, -1, (0, 255, 0), 1, cv2.LINE_AA)
+        cv2.drawContours(lyso_rgb, cnts, -1, (222, 143, 5), 1, cv2.LINE_AA)  # CB orange
         lyso_frames.append(upscale_frame(lyso_rgb, upscale_factor))
 
     # Save representative frames
@@ -62,4 +62,4 @@ def detect_organelles(
     write_video(mito_frames, Path(out_dir) / "Mitochondria_Detection.mp4", fps=fps)
     write_video(lyso_frames, Path(out_dir) / "Lysosomes_Detection.mp4", fps=fps)
 
-    print(f"Detection complete — outputs saved in {Path(out_dir).resolve()}")
+    print(f"Detection complete â outputs saved in {Path(out_dir).resolve()}")
