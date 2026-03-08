@@ -1,5 +1,5 @@
 # ============================================================
-# AutoMorphoTrack – Lysosomal Counting per Frame
+# AutoMorphoTrack â Lysosomal Counting per Frame
 # ============================================================
 
 import tifffile, numpy as np, cv2, pandas as pd, matplotlib.pyplot as plt
@@ -42,15 +42,15 @@ def count_lysosomes_per_frame(
 
         lyso_gray = (lyso_img * 255).astype(np.uint8)
         lyso_rgb = cv2.cvtColor(lyso_gray, cv2.COLOR_GRAY2RGB)
-        cv2.drawContours(lyso_rgb, cnts, -1, (0, 255, 0), 1, cv2.LINE_AA)
+        cv2.drawContours(lyso_rgb, cnts, -1, (222, 143, 5), 1, cv2.LINE_AA)  # CB orange
 
-        # Add small green numbers at each lysosome position
+        # Add small orange numbers at each lysosome position
         for i, c in enumerate(cnts):
             M = cv2.moments(c)
             if M["m00"] != 0:
                 cx, cy = int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"])
                 cv2.putText(lyso_rgb, str(i + 1), (cx, cy),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0, 255, 0), 1, cv2.LINE_AA)
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.35, (222, 143, 5), 1, cv2.LINE_AA)
 
         # Add total count label in white (small font)
         cv2.putText(lyso_rgb, f"Count: {lyso_count}", (10, 18),
@@ -72,7 +72,7 @@ def count_lysosomes_per_frame(
 
     # Plot counts over frames
     plt.figure(figsize=(6, 4))
-    plt.plot(df["Frame"], df["Lysosome_Count"], "-o", color="green")
+    plt.plot(df["Frame"], df["Lysosome_Count"], "-o", color="#DE8F05")
     plt.xlabel("Frame")
     plt.ylabel("Lysosome Count")
     plt.title("Lysosome Count per Frame")
@@ -81,4 +81,4 @@ def count_lysosomes_per_frame(
     plt.savefig(Path(out_dir) / "Lyso_Count_Plot.png", dpi=200)
     plt.close()
 
-    print(f"Lysosomal counting complete — outputs saved in {Path(out_dir).resolve()}")
+    print(f"Lysosomal counting complete â outputs saved in {Path(out_dir).resolve()}")
