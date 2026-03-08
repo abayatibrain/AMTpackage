@@ -1,5 +1,5 @@
 # ============================================================
-# AutoMorphoTrack – Automated Organelle Detection and Tracking
+# AutoMorphoTrack â Automated Organelle Detection and Tracking
 # ============================================================
 # Author: Armin Bayati, Ph.D.
 # Description:
@@ -33,7 +33,7 @@
 #     )
 # ============================================================
 
-__version__ = "1.0.0"
+__version__ = "2.0.0"
 __author__ = "Armin Bayati"
 
 # --- Utility Imports ---
