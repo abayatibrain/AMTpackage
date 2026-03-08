@@ -1,8 +1,9 @@
 # ============================================================
-# AutoMorphoTrack – Integrated Summary and Correlation Analysis
+# AutoMorphoTrack â Integrated Summary and Correlation Analysis
 # ============================================================
 
 import pandas as pd, numpy as np, matplotlib.pyplot as plt, seaborn as sns
+from scipy.stats import spearmanr
 from pathlib import Path
 from automorphotrack.utils import ensure_dir
 
@@ -42,12 +43,20 @@ def summarize_integrated_data(
         .merge(col_df, on="Frame", how="inner")
         .dropna()
     )
-    print(f"Merged dataset dimensions: {merged.shape[0]} rows × {merged.shape[1]} columns")
+    print(f"Merged dataset dimensions: {merged.shape[0]} rows Ã {merged.shape[1]} columns")
 
-    # ---------- Correlation computation ----------
+    # ---------- Correlation computation (Spearman rank) ----------
+    # Spearman is preferred over Pearson for biological morphometric data
+    # because many relationships are non-linear and distributions are non-normal
     numeric_cols = merged.select_dtypes(include=[np.number])
-    corr = numeric_cols.corr().round(2)
-    print("Correlation matrix computed")
+    cols = numeric_cols.columns
+    rho_matrix = np.zeros((len(cols), len(cols)))
+    for i, c1 in enumerate(cols):
+        for j, c2 in enumerate(cols):
+            rho, _ = spearmanr(numeric_cols[c1], numeric_cols[c2])
+            rho_matrix[i, j] = rho
+    corr = pd.DataFrame(rho_matrix, index=cols, columns=cols).round(2)
+    print("Spearman correlation matrix computed")
 
     # ---------- Save results ----------
     out_dir = Path(out_dir)
@@ -55,18 +64,18 @@ def summarize_integrated_data(
     corr_csv = out_dir / "Integrated_CorrelationMatrix.csv"
     merged.to_csv(merged_csv, index=False)
     corr.to_csv(corr_csv)
-    print(f"Saved merged data → {merged_csv}")
-    print(f"Saved correlation matrix → {corr_csv}")
+    print(f"Saved merged data â {merged_csv}")
+    print(f"Saved correlation matrix â {corr_csv}")
 
     # ---------- Plot correlation heatmap ----------
     fig, ax = plt.subplots(figsize=(28, 20))
     sns.heatmap(corr, annot=True, fmt=".2f", cmap="coolwarm", square=True)
-    ax.set_title("Integrated Correlation Matrix – Shape, Motility, Colocalization", fontsize=14)
+    ax.set_title("Integrated Spearman Correlation Matrix \u2013 Shape, Motility, Colocalization", fontsize=14)
     plt.tight_layout()
     heatmap_path = out_dir / "Integrated_CorrelationMatrix.png"
     plt.savefig(heatmap_path, dpi=300)
     plt.close(fig)
 
-    print(f"Saved heatmap → {heatmap_path}")
+    print(f"Saved heatmap â {heatmap_path}")
     print("Integrated summary analysis complete.")
     return merged, corr
