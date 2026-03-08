@@ -1,10 +1,14 @@
 # ============================================================
-# AutoMorphoTrack – Motility Analysis
+# AutoMorphoTrack â Motility Analysis
 # ============================================================
 
 import pandas as pd, numpy as np, matplotlib.pyplot as plt, seaborn as sns
 from pathlib import Path
 from automorphotrack.utils import ensure_dir, save_high_dpi
+
+# Colorblind-friendly palette (Okabe-Ito inspired)
+CB_MITO = "#0173B2"   # blue
+CB_LYSO = "#DE8F05"   # orange
 
 def analyze_motility(
     mito_tracks_path="Tracking_Outputs/Mito_Tracks.csv",
@@ -66,21 +70,24 @@ def analyze_motility(
     combined_summary.to_csv(summary_csv, index=False)
     combined_frame.to_csv(frame_csv, index=False)
 
-    print(f"Saved organelle summary → {summary_csv}")
-    print(f"Saved per-frame summary → {frame_csv}")
+    print(f"Saved organelle summary â {summary_csv}")
+    print(f"Saved per-frame summary â {frame_csv}")
 
     # ---------- Distribution Plots ----------
     fig, axes = plt.subplots(1, 2, figsize=(20, 8))
-    sns.kdeplot(mito_summary["Mean_Velocity"], color="red", fill=True, ax=axes[0], label="Mitochondria")
-    sns.kdeplot(lyso_summary["Mean_Velocity"], color="green", fill=True, alpha=0.4, ax=axes[0], label="Lysosomes")
+    # clip=(0, None) prevents KDE from extending into physically invalid negative values
+    sns.kdeplot(mito_summary["Mean_Velocity"], color=CB_MITO, fill=True, ax=axes[0], label="Mitochondria", clip=(0, None))
+    sns.kdeplot(lyso_summary["Mean_Velocity"], color=CB_LYSO, fill=True, alpha=0.4, ax=axes[0], label="Lysosomes", clip=(0, None))
     axes[0].set_title("Mean Velocity Distribution")
     axes[0].set_xlabel("Velocity (px/frame)")
+    axes[0].set_xlim(left=0)
     axes[0].legend()
 
-    sns.kdeplot(mito_summary["Total_Displacement"], color="red", fill=True, ax=axes[1], label="Mitochondria")
-    sns.kdeplot(lyso_summary["Total_Displacement"], color="green", fill=True, alpha=0.4, ax=axes[1], label="Lysosomes")
+    sns.kdeplot(mito_summary["Total_Displacement"], color=CB_MITO, fill=True, ax=axes[1], label="Mitochondria", clip=(0, None))
+    sns.kdeplot(lyso_summary["Total_Displacement"], color=CB_LYSO, fill=True, alpha=0.4, ax=axes[1], label="Lysosomes", clip=(0, None))
     axes[1].set_title("Total Displacement Distribution")
     axes[1].set_xlabel("Displacement (px)")
+    axes[1].set_xlim(left=0)
     axes[1].legend()
 
     plt.tight_layout()
@@ -89,9 +96,9 @@ def analyze_motility(
     # ---------- Scatter Plot ----------
     fig, ax = plt.subplots(figsize=(12, 10))
     sns.scatterplot(data=mito_summary, x="Total_Displacement", y="Mean_Velocity",
-                    color="red", s=30, label="Mitochondria")
+                    color=CB_MITO, s=30, label="Mitochondria")
     sns.scatterplot(data=lyso_summary, x="Total_Displacement", y="Mean_Velocity",
-                    color="green", s=30, alpha=0.6, label="Lysosomes")
+                    color=CB_LYSO, s=30, alpha=0.6, label="Lysosomes")
     ax.set_xlabel("Total Displacement (px)")
     ax.set_ylabel("Mean Velocity (px/frame)")
     ax.set_title("Motility Scatter Plot")
@@ -99,4 +106,4 @@ def analyze_motility(
     plt.tight_layout()
     save_high_dpi(fig, Path(out_dir) / "Motility_Scatter.png")
 
-    print(f"Motility analysis complete — outputs saved in {Path(out_dir).resolve()}")
+    print(f"Motility analysis complete â outputs saved in {Path(out_dir).resolve()}")
