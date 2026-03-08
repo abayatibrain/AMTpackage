@@ -1,11 +1,15 @@
 # ============================================================
-# AutoMorphoTrack – Colocalization Analysis (Manders + Pearson)
+# AutoMorphoTrack â Colocalization Analysis (Manders + Pearson)
 # ============================================================
 
 import tifffile, cv2, numpy as np, pandas as pd, matplotlib.pyplot as plt
 from skimage.filters import threshold_otsu
 from pathlib import Path
 from automorphotrack.utils import ensure_dir, save_high_dpi
+
+# Colorblind-friendly palette
+CB_MITO = "#0173B2"   # blue
+CB_LYSO = "#DE8F05"   # orange
 
 def analyze_colocalization(
     tif_path="Composite.tif",
@@ -93,11 +97,11 @@ def analyze_colocalization(
         "Manders_M1": m1_list,
         "Manders_M2": m2_list,
         "Pearson_r": pearson_r,
-        "Overlap_R": overlap_R,
+        "Cosine_Similarity": overlap_R,  # Renamed from Overlap_R for clarity
         "Mito_TotalIntensity": mito_sum,
         "Lyso_TotalIntensity": lyso_sum
     }).to_csv(csv_path, index=False)
-    print(f"Saved metrics → {csv_path}")
+    print(f"Saved metrics â {csv_path}")
 
     # ---------- Save video ----------
     video_path = Path(out_dir) / "Colocalization_BrightBlueOverlay.mp4"
@@ -112,17 +116,17 @@ def analyze_colocalization(
     # ---------- Plot metrics ----------
     plot_path = Path(out_dir) / "Colocalization_MetricsPlot.png"
     fig, ax = plt.subplots(figsize=(10, 9))
-    ax.plot(m1_list, 'r-', label='Manders M1 (mito→lyso)')
-    ax.plot(m2_list, 'g-', label='Manders M2 (lyso→mito)')
-    ax.plot(np.array(overlap_percent) / 100, 'b--', label='Overlap fraction')
-    ax.plot(pearson_r, 'k-.', label='Pearson r')
-    ax.plot(overlap_R, 'm:', label='Normalized R')
+    ax.plot(m1_list, color=CB_MITO, linestyle='-', label='Manders M1 (mito\u2192lyso)')
+    ax.plot(m2_list, color=CB_LYSO, linestyle='-', label='Manders M2 (lyso\u2192mito)')
+    ax.plot(np.array(overlap_percent) / 100, 'b--', label='Jaccard overlap fraction')
+    ax.plot(pearson_r, 'k-.', label='Pearson r (intensity)')
+    ax.plot(overlap_R, color='#CC79A7', linestyle=':', label='Cosine similarity')
     ax.set_xlabel("Frame")
-    ax.set_ylabel("Coefficient / Fraction (0–1)")
+    ax.set_ylabel("Coefficient / Fraction (0â1)")
     ax.set_ylim(0, 1)
     ax.legend()
     ax.set_title("Colocalization Metrics Over Time")
     plt.tight_layout()
     save_high_dpi(fig, plot_path)
 
-    print(f"Colocalization analysis complete — results saved in {Path(out_dir).resolve()}")
+    print(f"Colocalization analysis complete â results saved in {Path(out_dir).resolve()}")
