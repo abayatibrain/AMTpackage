@@ -1,5 +1,5 @@
 # ============================================================
-# AutoMorphoTrack – Organelle Shape Feature Extraction
+# AutoMorphoTrack â Organelle Shape Feature Extraction
 # ============================================================
 
 import tifffile, numpy as np, pandas as pd, cv2, seaborn as sns, matplotlib.pyplot as plt
@@ -9,6 +9,10 @@ from skimage.morphology import remove_small_objects, binary_opening, disk
 from skimage.segmentation import clear_border
 from pathlib import Path
 from automorphotrack.utils import ensure_dir, save_high_dpi, upscale_frame
+
+# Colorblind-friendly palette (Okabe-Ito inspired)
+CB_MITO = "#0173B2"   # blue
+CB_LYSO = "#DE8F05"   # orange
 
 def detect_mask(frame, ch, min_size=3, thr_factor=0.8):
     """Threshold and clean a single channel."""
@@ -41,7 +45,11 @@ def analyze_shape_features(
         for p in regionprops(lbl_m):
             if p.area < 5:
                 continue
-            circ = (4 * np.pi * p.area) / (p.perimeter ** 2 + 1e-9)
+            # Use perimeter_crofton for more accurate continuous perimeter estimate
+            # to avoid circularity > 1 due to discrete pixel-boundary underestimation
+            perim = getattr(p, 'perimeter_crofton', p.perimeter)
+            circ = (4 * np.pi * p.area) / (perim ** 2 + 1e-9)
+            circ = min(circ, 1.0)  # Clamp to [0, 1] for physical validity
             aspect = p.major_axis_length / (p.minor_axis_length + 1e-9)
             mito_records.append({
                 "Frame": f,
@@ -59,7 +67,9 @@ def analyze_shape_features(
         for p in regionprops(lbl_l):
             if p.area < 5:
                 continue
-            circ = (4 * np.pi * p.area) / (p.perimeter ** 2 + 1e-9)
+            perim = getattr(p, 'perimeter_crofton', p.perimeter)
+            circ = (4 * np.pi * p.area) / (perim ** 2 + 1e-9)
+            circ = min(circ, 1.0)  # Clamp to [0, 1] for physical validity
             aspect = p.major_axis_length / (p.minor_axis_length + 1e-9)
             lyso_records.append({
                 "Frame": f,
@@ -82,14 +92,15 @@ def analyze_shape_features(
 
     # ---------- KDE Distribution Plots ----------
     fig, axes = plt.subplots(1, 2, figsize=(20, 8))
-    sns.kdeplot(mito_df["Circularity"], ax=axes[0], color="red", fill=True, alpha=0.5, label="Mito")
-    sns.kdeplot(lyso_df["Circularity"], ax=axes[0], color="green", fill=True, alpha=0.4, label="Lyso")
+    sns.kdeplot(mito_df["Circularity"], ax=axes[0], color=CB_MITO, fill=True, alpha=0.5, label="Mito", clip=(0, 1))
+    sns.kdeplot(lyso_df["Circularity"], ax=axes[0], color=CB_LYSO, fill=True, alpha=0.4, label="Lyso", clip=(0, 1))
     axes[0].set_title("Circularity Distribution")
-    axes[0].set_xlabel("Circularity (4πA/P²)")
+    axes[0].set_xlabel("Circularity (4\u03C0A/P\u00B2)")
+    axes[0].set_xlim(0, 1)
     axes[0].legend(frameon=False)
 
-    sns.kdeplot(mito_df["Solidity"], ax=axes[1], color="red", fill=True, alpha=0.5, label="Mito")
-    sns.kdeplot(lyso_df["Solidity"], ax=axes[1], color="green", fill=True, alpha=0.4, label="Lyso")
+    sns.kdeplot(mito_df["Solidity"], ax=axes[1], color=CB_MITO, fill=True, alpha=0.5, label="Mito", clip=(0, 1))
+    sns.kdeplot(lyso_df["Solidity"], ax=axes[1], color=CB_LYSO, fill=True, alpha=0.4, label="Lyso", clip=(0, 1))
     axes[1].set_title("Solidity Distribution")
     axes[1].set_xlabel("Solidity")
     axes[1].legend(frameon=False)
@@ -97,4 +108,4 @@ def analyze_shape_features(
     plt.tight_layout()
     save_high_dpi(fig, Path(out_dir) / "Shape_Distributions.png")
 
-    print(f"Shape feature analysis complete — results saved in {Path(out_dir).resolve()}")
+    print(f"Shape feature analysis complete â results saved in {Path(out_dir).resolve()}")
