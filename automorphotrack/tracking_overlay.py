@@ -1,5 +1,5 @@
 # ============================================================
-# AutoMorphoTrack – Organelle Tracking with Real-Intensity Overlays
+# AutoMorphoTrack â Organelle Tracking with Real-Intensity Overlays
 # ============================================================
 
 import numpy as np, cv2, tifffile
@@ -95,14 +95,14 @@ def track_overlay(
 
         for p1, p2 in mito_paths:
             cv2.line(mito_frame, tuple(np.int32(p1[::-1])), tuple(np.int32(p2[::-1])),
-                     (255, 0, 0), line_thickness, cv2.LINE_AA)
+                     (1, 115, 178), line_thickness, cv2.LINE_AA)
             cv2.line(comp_frame, tuple(np.int32(p1[::-1])), tuple(np.int32(p2[::-1])),
-                     (255, 0, 0), line_thickness, cv2.LINE_AA)
+                     (1, 115, 178), line_thickness, cv2.LINE_AA)
         for p1, p2 in lyso_paths:
             cv2.line(lyso_frame, tuple(np.int32(p1[::-1])), tuple(np.int32(p2[::-1])),
-                     (0, 255, 0), line_thickness, cv2.LINE_AA)
+                     (222, 143, 5), line_thickness, cv2.LINE_AA)
             cv2.line(comp_frame, tuple(np.int32(p1[::-1])), tuple(np.int32(p2[::-1])),
-                     (0, 255, 0), line_thickness, cv2.LINE_AA)
+                     (222, 143, 5), line_thickness, cv2.LINE_AA)
 
         mito_frames.append(upscale_frame(mito_frame))
         lyso_frames.append(upscale_frame(lyso_frame))
@@ -120,4 +120,4 @@ def track_overlay(
                     cv2.cvtColor(frames[-1], cv2.COLOR_RGB2BGR),
                     [cv2.IMWRITE_PNG_COMPRESSION, 0])
 
-    print(f"Tracking overlay complete — results saved in {Path(out_dir).resolve()}")
+    print(f"Tracking overlay complete â results saved in {Path(out_dir).resolve()}")
