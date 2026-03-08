@@ -1,5 +1,5 @@
 # ============================================================
-# AutoMorphoTrack – Shape Profiling (Combined Organelle Metrics)
+# AutoMorphoTrack â Shape Profiling (Combined Organelle Metrics)
 # ============================================================
 
 import pandas as pd
@@ -23,7 +23,7 @@ def profile_shape_data(
     # ---------- Save combined CSV ----------
     combined_csv_path = Path(out_dir) / "Combined_ShapeData.csv"
     combined_df.to_csv(combined_csv_path, index=False)
-    print(f"Saved combined shape data CSV → {combined_csv_path}")
+    print(f"Saved combined shape data CSV â {combined_csv_path}")
 
     # ---------- Violin plots ----------
     fig, axes = plt.subplots(1, 3, figsize=(30, 9))
@@ -34,7 +34,7 @@ def profile_shape_data(
             data=combined_df,
             x="Type",
             y=metric,
-            palette={"Mitochondria": "red", "Lysosomes": "green"},
+            palette={"Mitochondria": "#0173B2", "Lysosomes": "#DE8F05"},
             cut=0,
             inner="quartile",
             ax=ax
@@ -48,4 +48,4 @@ def profile_shape_data(
     out_path = Path(out_dir) / "Shape_ViolinPlots.png"
     save_high_dpi(fig, out_path)
 
-    print(f"Shape profiling complete — violin plots and combined CSV saved in {Path(out_dir).resolve()}")
+    print(f"Shape profiling complete â violin plots and combined CSV saved in {Path(out_dir).resolve()}")
