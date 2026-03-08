@@ -1,19 +1,19 @@
 from setuptools import setup, find_packages
+import os
 
-# Read the README file for the long description
-with open("README.md", "r", encoding="utf-8") as fh:
-    long_description = fh.read()
+# Read README file (handle missing file gracefully for pip install from sdist)
+long_description = ""
+readme_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "README.md")
+if os.path.exists(readme_path):
+    with open(readme_path, "r", encoding="utf-8") as fh:
+        long_description = fh.read()
 
 setup(
-    name="AutoMorphoTrack",
-    version="1.0.5",
-    author="Armin Bayati",
+    name="automorphotrack",
+    version="2.0.0",
+    author="Armin Bayati, Ph.D.",
     author_email="a.bayati.brain@gmail.com",
-    description=(
-        "AutoMorphoTrack is an open-source Python package for automated detection, "
-        "morphology classification, motility tracking, and colocalization analysis "
-        "of organelles in multichannel fluorescence microscopy data."
-    ),
+    description="Automated pipeline for mitochondrial and lysosomal detection, tracking, morphology, and colocalization analysis in microscopy images.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/abayatibrain/AMTpackage",
