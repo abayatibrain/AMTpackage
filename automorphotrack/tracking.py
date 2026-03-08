@@ -1,5 +1,5 @@
 # ============================================================
-# AutoMorphoTrack – Organelle Tracking (Cumulative Paths)
+# AutoMorphoTrack â Organelle Tracking (Cumulative Paths)
 # ============================================================
 
 import numpy as np, cv2, pandas as pd, tifffile
@@ -98,11 +98,11 @@ def track_organelles(
         mito_frame, lyso_frame, comp_frame = frame_rgb.copy(), frame_rgb.copy(), frame_rgb.copy()
 
         for p1, p2 in mito_paths:
-            cv2.line(mito_frame, tuple(np.int32(p1[::-1])), tuple(np.int32(p2[::-1])), (255, 0, 0), 1)
-            cv2.line(comp_frame, tuple(np.int32(p1[::-1])), tuple(np.int32(p2[::-1])), (255, 0, 0), 1)
+            cv2.line(mito_frame, tuple(np.int32(p1[::-1])), tuple(np.int32(p2[::-1])), (1, 115, 178), 1)
+            cv2.line(comp_frame, tuple(np.int32(p1[::-1])), tuple(np.int32(p2[::-1])), (1, 115, 178), 1)
         for p1, p2 in lyso_paths:
-            cv2.line(lyso_frame, tuple(np.int32(p1[::-1])), tuple(np.int32(p2[::-1])), (0, 255, 0), 1)
-            cv2.line(comp_frame, tuple(np.int32(p1[::-1])), tuple(np.int32(p2[::-1])), (0, 255, 0), 1)
+            cv2.line(lyso_frame, tuple(np.int32(p1[::-1])), tuple(np.int32(p2[::-1])), (222, 143, 5), 1)
+            cv2.line(comp_frame, tuple(np.int32(p1[::-1])), tuple(np.int32(p2[::-1])), (222, 143, 5), 1)
 
         mito_frames.append(upscale_frame(mito_frame))
         lyso_frames.append(upscale_frame(lyso_frame))
@@ -118,4 +118,4 @@ def track_organelles(
     cv2.imwrite(str(Path(out_dir) / "Cumulative_Lyso.png"), cv2.cvtColor(lyso_frames[-1], cv2.COLOR_RGB2BGR))
     cv2.imwrite(str(Path(out_dir) / "Cumulative_Composite.png"), cv2.cvtColor(composite_frames[-1], cv2.COLOR_RGB2BGR))
 
-    print(f"Tracking complete — outputs saved in {Path(out_dir).resolve()}")
+    print(f"Tracking complete â outputs saved in {Path(out_dir).resolve()}")
