@@ -10,7 +10,7 @@ if os.path.exists(readme_path):
 
 setup(
     name="automorphotrack",
-    version="2.0.2",
+    version="2.1.0",
     author="Armin Bayati, Ph.D.",
     author_email="a.bayati.brain@gmail.com",
     description="Automated pipeline for mitochondrial and lysosomal detection, tracking, morphology, and colocalization analysis in microscopy images.",
