@@ -17,7 +17,7 @@ CB_LYSO = "#DE8F05"   # orange
 def detect_mask(frame, ch, min_size=3, thr_factor=0.8):
     """Threshold and clean a single channel."""
     img = frame[..., ch].astype(float)
-    img = (img - img.min()) / (img.ptp() + 1e-12)
+    img = (img - img.min()) / (np.ptp(img) + 1e-12)
     thr = threshold_otsu(img) * thr_factor
     mask = clear_border(binary_opening(img > thr, footprint=disk(1)))
     mask = remove_small_objects(mask, min_size)
