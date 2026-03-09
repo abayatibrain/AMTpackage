@@ -33,7 +33,7 @@
 #     )
 # ============================================================
 
-__version__ = "2.0.2"
+__version__ = "2.1.0"
 __author__ = "Armin Bayati"
 
 # --- Utility Imports ---
@@ -55,6 +55,9 @@ from automorphotrack.tracking_overlay import track_overlay
 from automorphotrack.motility import analyze_motility
 from automorphotrack.colocalization import analyze_colocalization
 from automorphotrack.summary import summarize_integrated_data
+from automorphotrack.temporal_dynamics import analyze_temporal_dynamics
+from automorphotrack.spatial_statistics import analyze_spatial_statistics
+from automorphotrack.network_analysis import analyze_network_topology
 
 # --- Convenience Alias (optional shortcut API) ---
 __all__ = [
@@ -71,5 +74,8 @@ __all__ = [
     "track_overlay",
     "analyze_motility",
     "analyze_colocalization",
-    "summarize_integrated_data"
+    "summarize_integrated_data",
+    "analyze_temporal_dynamics",
+    "analyze_spatial_statistics",
+    "analyze_network_topology"
 ]
