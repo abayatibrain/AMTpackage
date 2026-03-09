@@ -1,5 +1,5 @@
 # ============================================================
-# AutoMorphoTrack – Mitochondrial Morphology Classification
+# AutoMorphoTrack â Mitochondrial Morphology Classification
 # ============================================================
 
 import tifffile, numpy as np, cv2, matplotlib.pyplot as plt, pandas as pd
@@ -13,7 +13,7 @@ from automorphotrack.utils import ensure_dir, upscale_frame, save_high_dpi
 def detect_mask(frame, ch, thr_factor=0.8, min_size=10):
     """Threshold a channel to obtain clean mitochondrial mask."""
     img = frame[..., ch].astype(float)
-    img = (img - img.min()) / (img.ptp() + 1e-12)
+    img = (img - img.min()) / (np.ptp(img) + 1e-12)
     thr = threshold_otsu(img) * thr_factor
     mask = clear_border(binary_opening(img > thr, footprint=disk(1)))
     mask = remove_small_objects(mask, min_size)
@@ -137,4 +137,4 @@ def classify_morphology(
     # Save labeled frame 0 still
     out_path = Path(out_dir) / "Morphology_Frame0_Labeled.png"
     cv2.imwrite(str(out_path), cv2.cvtColor(video_frames[0], cv2.COLOR_RGB2BGR))
-    print(f"Morphology visualization saved → {out_path}")
+    print(f"Morphology visualization saved â {out_path}")
