@@ -22,7 +22,7 @@ def count_lysosomes_per_frame(
     tif_path="Composite.tif",
     out_dir="Lyso_Count_Outputs",
     lyso_channel=1,
-    upscale_factor=2,
+    upscale_factor=4,
     fps=5):
 
     ensure_dir(out_dir)
