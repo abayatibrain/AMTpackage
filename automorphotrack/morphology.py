@@ -34,7 +34,7 @@ def classify_morphology(
     ecc_thresh_elongated=0.80,
     area_thresh_punctate=0.03,
     ecc_thresh_punctate=0.60,
-    upscale_factor=2,
+    upscale_factor=4,
     fps=5):
 
     ensure_dir(out_dir)
