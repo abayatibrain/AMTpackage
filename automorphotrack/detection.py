@@ -23,7 +23,7 @@ def detect_organelles(
     out_dir="Detection_Outputs",
     mito_channel=0,
     lyso_channel=1,
-    upscale_factor=2,
+    upscale_factor=4,
     fps=5):
 
     ensure_dir(out_dir)
