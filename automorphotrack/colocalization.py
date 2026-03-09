@@ -17,7 +17,7 @@ def analyze_colocalization(
     lyso_channel=1,
     out_dir="Colocalization_Outputs",
     fps=5,
-    upscale=2.0,
+    upscale=4.0,
     overlay_alpha=0.6):
 
     ensure_dir(out_dir)
