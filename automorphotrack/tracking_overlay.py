@@ -15,7 +15,7 @@ def track_overlay(
     mito_channel=0,
     lyso_channel=1,
     fps=10,
-    upscale=2.0,
+    upscale=4.0,
     line_thickness=1):
 
     ensure_dir(out_dir)
