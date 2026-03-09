@@ -1,6 +1,6 @@
 # ============================================================
 # AutoMorphoTrack Utilities
-# ============================================================
+# =============================================================
 
 import os
 from pathlib import Path
@@ -18,7 +18,7 @@ def save_high_dpi(fig, path, dpi=600):
     plt.close(fig)
     print(f"Saved figure: {path}")
 
-def upscale_frame(img, scale=2):
+def upscale_frame(img, scale=4):
     """Upscale an image for high-quality visualization."""
     h, w = img.shape[:2]
     return cv2.resize(img, (w*scale, h*scale), interpolation=cv2.INTER_CUBIC)
