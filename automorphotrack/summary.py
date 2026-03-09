@@ -5,7 +5,7 @@
 import pandas as pd, numpy as np, matplotlib.pyplot as plt, seaborn as sns
 from scipy.stats import spearmanr
 from pathlib import Path
-from automorphotrack.utils import ensure_dir
+from automorphotrack.utils import ensure_dir, save_high_dpi
 
 def summarize_integrated_data(
     shape_metrics_path="Shape_Feature_Outputs/Mito_ShapeMetrics.csv",
@@ -73,8 +73,7 @@ def summarize_integrated_data(
     ax.set_title("Integrated Spearman Correlation Matrix \u2013 Shape, Motility, Colocalization", fontsize=14)
     plt.tight_layout()
     heatmap_path = out_dir / "Integrated_CorrelationMatrix.png"
-    plt.savefig(heatmap_path, dpi=300)
-    plt.close(fig)
+    save_high_dpi(fig, heatmap_path)
 
     print(f"Saved heatmap â {heatmap_path}")
     print("Integrated summary analysis complete.")
