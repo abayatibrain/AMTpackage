@@ -77,15 +77,22 @@ def analyze_colocalization(
         mito_sum.append(mito.sum())
         lyso_sum.append(lyso.sum())
 
-        # Visualization with bright-blue overlay
-        mito_norm = (mito / mito.max() * 255).astype(np.uint8)
-        lyso_norm = (lyso / lyso.max() * 255).astype(np.uint8)
+        # Visualization with CB-safe blue (mito) / orange (lyso) overlay
+        mito_norm = (mito / (mito.max() + 1e-12) * 255).astype(np.uint8)
+        lyso_norm = (lyso / (lyso.max() + 1e-12) * 255).astype(np.uint8)
         rgb = np.zeros((*mito.shape, 3), np.uint8)
-        rgb[..., 0], rgb[..., 1] = mito_norm, lyso_norm
+        # Mito â blue (1, 115, 178)
+        rgb[..., 0] = (mito_norm * (1 / 255)).astype(np.uint8)
+        rgb[..., 1] = (mito_norm * (115 / 255)).astype(np.uint8)
+        rgb[..., 2] = (mito_norm * (178 / 255)).astype(np.uint8)
+        # Lyso â orange (222, 143, 5) added on top
+        rgb[..., 0] = np.clip(rgb[..., 0].astype(int) + (lyso_norm * (222 / 255)).astype(int), 0, 255).astype(np.uint8)
+        rgb[..., 1] = np.clip(rgb[..., 1].astype(int) + (lyso_norm * (143 / 255)).astype(int), 0, 255).astype(np.uint8)
+        rgb[..., 2] = np.clip(rgb[..., 2].astype(int) + (lyso_norm * (5 / 255)).astype(int), 0, 255).astype(np.uint8)
 
         mask = overlap_mask.astype(bool)
-        bright_blue_overlay = np.full_like(rgb[mask], (0, 150, 255), dtype=np.uint8)
-        rgb[mask] = cv2.addWeighted(rgb[mask], 1 - overlay_alpha, bright_blue_overlay, overlay_alpha, 0)
+        white_overlay = np.full_like(rgb[mask], (255, 255, 255), dtype=np.uint8)
+        rgb[mask] = cv2.addWeighted(rgb[mask], 1 - overlay_alpha, white_overlay, overlay_alpha, 0)
 
         frames_out.append(upscale_frame(rgb))
 
