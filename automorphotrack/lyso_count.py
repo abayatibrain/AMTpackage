@@ -12,7 +12,7 @@ from automorphotrack.utils import ensure_dir, write_video, upscale_frame
 def detect_mask(frame, ch, thr_factor=0.8, min_size=2):
     """Detect lysosomes in a single channel frame."""
     img = frame[..., ch].astype(float)
-    img = (img - img.min()) / (img.ptp() + 1e-12)
+    img = (img - img.min()) / (np.ptp(img) + 1e-12)
     thr = threshold_otsu(img) * thr_factor
     mask = clear_border(binary_opening(img > thr, footprint=disk(1)))
     mask = remove_small_objects(mask, min_size)
